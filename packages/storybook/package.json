@@ -1,0 +1,54 @@
+{
+  "name": "storybook",
+  "version": "4.0.0-alpha.36",
+  "description": "Storybook components",
+  "author": "Material-UI Team",
+  "private": true,
+  "scripts": {
+    "start": "start-storybook -p 6006 --ci",
+    "build": "build-storybook -o dist/ --quiet",
+    "export": "mv dist ../../docs/export/storybook",
+    "typescript": "tsc -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mui-org/material-ui-x.git",
+    "directory": "packages/storybook"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.9.12",
+    "@material-ui/data-grid": "4.0.0-alpha.36",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.54",
+    "@material-ui/x-grid": "4.0.0-alpha.36",
+    "@material-ui/x-grid-data-generator": "4.0.0-alpha.36",
+    "@material-ui/x-license": "4.0.0-alpha.36",
+    "react": "^17.0.2",
+    "react-is": "^17.0.2",
+    "rxjs": "^7.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@storybook/addon-a11y": "^6.2.2",
+    "@storybook/addon-actions": "^6.2.2",
+    "@storybook/addon-console": "^1.2.2",
+    "@storybook/addon-docs": "^6.2.2",
+    "@storybook/addon-essentials": "^6.2.2",
+    "@storybook/addon-storysource": "^6.2.2",
+    "@storybook/addon-viewport": "^6.2.2",
+    "@storybook/react": "^6.2.2",
+    "@storybook/theming": "^6.2.2",
+    "babel-loader": "^8.1.0",
+    "core-js": "^3.6.5",
+    "react-docgen-typescript-loader": "^3.7.2",
+    "source-map-loader": "^1.0.2",
+    "string-replace-loader": "^3.0.1",
+    "ts-loader": "^8.0.2"
+  },
+  "browserslist": [
+    ">0.3%",
+    "not ie 11",
+    "not dead",
+    "not op_mini all"
+  ]
+}

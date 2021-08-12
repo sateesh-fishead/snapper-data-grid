@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    // Already tested with eslint
+    "noUnusedLocals": false,
+    "jsx": "react",
+    // TODO, turn to true
+    "noImplicitAny": false,
+    "types": ["node", "requestidlecallback"],
+    "baseUrl": "./",
+    "paths": {
+      "@material-ui/data-grid": ["./packages/grid/data-grid/src"],
+      "@material-ui/data-grid/*": ["./packages/grid/data-grid/src/*"],
+      "@material-ui/x-grid-data-generator": ["./packages/grid/x-grid-data-generator/src/"],
+      "@material-ui/x-grid-data-generator/*": ["./packages/grid/x-grid-data-generator/src/*"],
+      "@material-ui/x-grid": ["./packages/grid/x-grid/src"],
+      "@material-ui/x-grid/*": ["./packages/grid/x-grid/src/*"],
+      "@material-ui/x-license": ["./packages/x-license/src"],
+      "@material-ui/x-license/*": ["./packages/x-license/src/*"]
+    }
+  }
+}

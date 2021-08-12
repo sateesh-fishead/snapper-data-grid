@@ -1,0 +1,229 @@
+version: 2.1
+
+defaults: &defaults
+  parameters:
+    react-dist-tag:
+      description: The dist-tag of react to be used
+      type: string
+      default: stable
+  environment:
+    # Keep in sync with "Save playwright cache"
+    PLAYWRIGHT_BROWSERS_PATH: /tmp/pw-browsers
+    # expose it globally otherwise we have to thread it from each job to the install command
+    REACT_DIST_TAG: << parameters.react-dist-tag >>
+  working_directory: /tmp/material-ui-x
+  docker:
+    - image: circleci/node:12
+# CircleCI has disabled the cache across forks for security reasons.
+# Following their official statement, it was a quick solution, they
+# are working on providing this feature back with appropriate security measures.
+# https://discuss.circleci.com/t/saving-cache-stopped-working-warning-skipping-this-step-disabled-in-configuration/24423/21
+#
+# restore_repo: &restore_repo
+#   restore_cache:
+#     key: v1-repo-{{ .Branch }}-{{ .Revision }}
+
+commands:
+  install_js:
+    parameters:
+      browsers:
+        type: boolean
+        default: false
+        description: 'Set to true if you intend to any browser (e.g. with playwright).'
+
+    steps:
+      - run:
+          name: View install environment
+          command: |
+            node --version
+            yarn --version
+      - restore_cache:
+          name: Restore yarn cache
+          keys:
+            - v7-yarn-{{ checksum "yarn.lock" }}
+            - v7-yarn-
+      - run:
+          name: Set yarn cache folder
+          command: |
+            # Keep path in sync with `save_cache` for key "v7-yarn-"
+            yarn config set cache-folder /tmp/yarn-cache
+            # Debug information
+            yarn cache dir
+            yarn cache list
+      - when:
+          condition: << parameters.browsers >>
+          steps:
+            - run:
+                name: Prepare playwright hash
+                command: yarn --json list --pattern playwright > /tmp/playwright_info.json
+            - store_artifacts:
+                name: Debug playwright hash
+                path: /tmp/playwright_info.json
+            - restore_cache:
+                name: Restore playwright cache
+                keys:
+                  - v5-playwright-{{ arch }}-{{ checksum "/tmp/playwright_info.json" }}
+                  - v5-playwright-{{ arch }}-
+                  - v5-playwright-
+      - run:
+          name: Install js dependencies
+          command: yarn install --verbose
+          environment:
+            PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: <<# parameters.browsers >>0<</ parameters.browsers >><<^ parameters.browsers >>1<</ parameters.browsers >>
+      - save_cache:
+          name: Save yarn cache
+          key: v7-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            # Keep path in sync with "Set yarn cache folder"
+            # Can't use environment variables for `save_cache` paths (tested in https://app.circleci.com/pipelines/github/mui-org/material-ui/37813/workflows/5b1e207f-ac8b-44e7-9ba4-d0f9a01f5c55/jobs/223370)
+            - /tmp/yarn-cache
+      - when:
+          condition: << parameters.browsers >>
+          steps:
+            - save_cache:
+                name: Save playwright cache
+                key: v5-playwright-{{ arch }}-{{ checksum "/tmp/playwright_info.json" }}
+                paths:
+                  # Keep path in sync with "PLAYWRIGHT_BROWSERS_PATH"
+                  # Can't use environment variables for `save_cache` paths (tested in https://app.circleci.com/pipelines/github/mui-org/material-ui/37813/workflows/5b1e207f-ac8b-44e7-9ba4-d0f9a01f5c55/jobs/223370)
+                  - /tmp/pw-browsers
+
+jobs:
+  checkout:
+    <<: *defaults
+    steps:
+      - checkout
+      - install_js
+      - run:
+          name: Should not have any git not staged
+          command: git diff --exit-code
+      - run:
+          name: Check for duplicated packages
+          command: yarn deduplicate
+      - save_cache:
+          key: v6-yarn-sha-{{ checksum "yarn.lock" }}
+          paths:
+          # Keep path in sync with "Set yarn cache folder"
+          # Can't use environment variables for `save_cache` paths (tested in https://app.circleci.com/pipelines/github/mui-org/material-ui/37813/workflows/5b1e207f-ac8b-44e7-9ba4-d0f9a01f5c55/jobs/223370)
+            - ~/.cache/yarn
+  test_unit:
+    <<: *defaults
+    steps:
+      - checkout
+      - install_js
+      - run:
+          name: Tests fake browser
+          command: yarn test:coverage
+      - run:
+          name: Check coverage generated
+          command: |
+            if ! [[ -s coverage/lcov.info ]]
+            then
+              exit 1
+            fi
+  test_static:
+    <<: *defaults
+    steps:
+      - checkout
+      - install_js
+      - run:
+          name: '`yarn prettier` changes committed?'
+          command: yarn prettier check-changed
+      - run:
+          name: Eslint
+          command: yarn eslint:ci
+      - run:
+          name: Stylelint
+          command: yarn stylelint
+      - run:
+          name: Lint JSON
+          command: yarn jsonlint
+      - run:
+          name: Generate the documentation
+          command: yarn docs:api
+      - run:
+          name: '`yarn docs:api` changes committed?'
+          command: git diff --exit-code
+  test_browser:
+    <<: *defaults
+    docker:
+      - image: mcr.microsoft.com/playwright@sha256:e910bbb5301a1498b1d5385c5afa09ab17450ff0e974728d22aa2eb1be5a21b8
+        environment:
+          NODE_ENV: development # Needed if playwright is in `devDependencies`
+    steps:
+      - checkout
+      - install_js:
+          browsers: true
+      - run:
+          name: Tests real browsers
+          command: yarn test:karma
+      - store_artifacts:
+          # hardcoded in karma-webpack
+          path: /tmp/_karma_webpack_
+          destination: artifact-file
+  test_types:
+    <<: *defaults
+    steps:
+      - checkout
+      - install_js
+      - run:
+          name: Transpile TypeScript demos
+          command: yarn docs:typescript:formatted --disable-cache
+      - run:
+          name: '`yarn docs:typescript:formatted` changes committed?'
+          command: git add -A && git diff --exit-code --staged
+      - run:
+          name: Tests TypeScript definitions
+          command: yarn typescript
+  test_e2e:
+    <<: *defaults
+    docker:
+      - image: mcr.microsoft.com/playwright@sha256:e910bbb5301a1498b1d5385c5afa09ab17450ff0e974728d22aa2eb1be5a21b8
+        environment:
+          NODE_ENV: development # Needed if playwright is in `devDependencies`
+    steps:
+      - checkout
+      - install_js:
+          browsers: true
+      - run:
+          name: Run e2e tests
+          command: yarn test:e2e
+  test_regressions:
+    <<: *defaults
+    docker:
+      - image: mcr.microsoft.com/playwright@sha256:e910bbb5301a1498b1d5385c5afa09ab17450ff0e974728d22aa2eb1be5a21b8
+        environment:
+          NODE_ENV: development # Needed if playwright is in `devDependencies`
+    steps:
+      - checkout
+      - install_js:
+          browsers: true
+      - run:
+          name: Run visual regression tests
+          command: xvfb-run yarn test:regressions
+      - run:
+          name: Upload screenshots to Argos CI
+          command: yarn test:argos
+workflows:
+  version: 2
+  pipeline:
+    jobs:
+      - checkout
+      - test_unit:
+          requires:
+            - checkout
+      - test_static:
+          requires:
+            - checkout
+      - test_browser:
+          requires:
+            - checkout
+      - test_types:
+          requires:
+            - checkout
+      - test_e2e:
+          requires:
+            - checkout
+      - test_regressions:
+          requires:
+            - checkout

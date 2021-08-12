@@ -1,0 +1,9 @@
+/.git
+/docs/.next
+/docs/export
+/lerna.json
+/packages/grid/_modules_/grid/lib
+CHANGELOG.md
+dist
+node_modules
+build
