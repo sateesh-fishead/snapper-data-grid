@@ -32,7 +32,7 @@ export function PageSize100() {
 
   return (
     <div className="grid-container">
-      <DataGrid rows={data.rows} columns={data.columns} pageSize={100} />
+      <DataGrid rows={data.rows} columns={data.columns} pageSize={100}  />
     </div>
   );
 }

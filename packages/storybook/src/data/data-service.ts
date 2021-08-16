@@ -31,6 +31,7 @@ export function getData(rowLength: number, colLength: number): GridData {
     { field: 'id', headerName: 'id', type: 'number' },
     { field: 'currencyPair', headerName: 'Currency Pair' },
   ];
+
   for (let j = 1; j <= pricesColLength; j += 1) {
     // const y = Math.floor(j / 12);
     columns.push({ field: `price${j}M`, headerName: `${j}M`, type: 'number' }); // (y > 0 ? `${y}Y` : '') + `${j - y * 12}M`

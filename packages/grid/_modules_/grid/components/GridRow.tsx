@@ -21,10 +21,12 @@ export interface GridRowProps {
   className: string;
   rowIndex: number;
   children: React.ReactNode;
+  ischild?: any
 }
 
 export function GridRow(props: GridRowProps) {
-  const { selected, id, className, rowIndex, children } = props;
+  const { selected, id, className, rowIndex, children, ischild } = props;
+  console.log(ischild);
   const ariaRowIndex = rowIndex + 2; // 1 for the header row and 1 as it's 1 based
   const apiRef = useGridApiContext();
   const rowHeight = useGridSelector(apiRef, gridDensityRowHeightSelector);
@@ -80,6 +82,7 @@ export function GridRow(props: GridRowProps) {
       aria-rowindex={ariaRowIndex}
       aria-selected={selected}
       style={style}
+      is-child = {ischild}
       {...mouseEventsHandlers}
     >
       {children}

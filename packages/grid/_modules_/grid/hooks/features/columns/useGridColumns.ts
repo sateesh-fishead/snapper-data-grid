@@ -8,6 +8,7 @@ import {
 import { GridApiRef } from '../../../models/api/gridApiRef';
 import { GridColumnApi } from '../../../models/api/gridColumnApi';
 import { gridCheckboxSelectionColDef } from '../../../models/colDef/gridCheckboxSelection';
+import { gridCollapseSelectionColDef } from '../../../models/colDef/gridCollapseSelection';
 import {
   GridColDef,
   GridColumns,
@@ -94,6 +95,7 @@ function hydrateColumns(
   columns: GridColumns,
   columnTypes: GridColumnTypesRecord = {},
   withCheckboxSelection: boolean,
+  withExpandRowSelection: boolean,
   logger: Logger,
   getLocaleText: <T extends GridTranslationKeys>(key: T) => GridLocaleText[T],
 ): GridColumns {
@@ -101,11 +103,25 @@ function hydrateColumns(
   const mergedColTypes = mergeGridColTypes(getGridDefaultColumnTypes(), columnTypes);
   const extendedColumns = columns.map((c) => ({ ...getGridColDef(mergedColTypes, c.type), ...c }));
 
-  if (withCheckboxSelection) {
-    const checkboxSelection = { ...gridCheckboxSelectionColDef };
-    checkboxSelection.headerName = getLocaleText('checkboxSelectionHeaderName');
-    return [checkboxSelection, ...extendedColumns];
-  }
+
+    if(withExpandRowSelection && withCheckboxSelection){
+        const expandSelection = { ...gridCollapseSelectionColDef };
+        expandSelection.headerName = 'Select Row';
+        const checkboxSelection = { ...gridCheckboxSelectionColDef };
+        checkboxSelection.headerName = getLocaleText('checkboxSelectionHeaderName');
+        return [checkboxSelection, expandSelection, ...extendedColumns];
+
+
+    } else if (withExpandRowSelection) {
+        const expandSelection = { ...gridCollapseSelectionColDef };
+        expandSelection.headerName = 'Select Row';
+        return [expandSelection, ...extendedColumns];
+    } else if (withCheckboxSelection) {
+        const checkboxSelection = { ...gridCheckboxSelectionColDef };
+        checkboxSelection.headerName = getLocaleText('checkboxSelectionHeaderName');
+        return [checkboxSelection, ...extendedColumns];
+    }
+
 
   return extendedColumns;
 }
@@ -141,7 +157,7 @@ export function useGridColumns(
   apiRef: GridApiRef,
   props: Pick<
     GridComponentProps,
-    'columns' | 'onColumnVisibilityChange' | 'columnTypes' | 'checkboxSelection'
+    'columns' | 'onColumnVisibilityChange' | 'columnTypes' | 'checkboxSelection' | 'toggleRow'
   >,
 ): void {
   const logger = useLogger('useGridColumns');
@@ -316,6 +332,7 @@ export function useGridColumns(
         props.columns,
         props.columnTypes,
         !!props.checkboxSelection,
+        !!props.toggleRow,
         logger,
         apiRef.current.getLocaleText,
       );
@@ -331,6 +348,7 @@ export function useGridColumns(
     props.columns,
     props.columnTypes,
     props.checkboxSelection,
+    props.toggleRow,
     updateState,
     setColumnsState,
   ]);

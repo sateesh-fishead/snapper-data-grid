@@ -17,7 +17,10 @@ export const DATA_GRID_PROPTYPES = {
     }
     return null;
   }),
-  checkboxSelectionVisibleOnly: chainPropTypes(PropTypes.bool, (props: any) => {
+    toggleRow: chainPropTypes(PropTypes.bool, (props: any) => {
+        return null;
+    }),
+    checkboxSelectionVisibleOnly: chainPropTypes(PropTypes.bool, (props: any) => {
     if (props.checkboxSelectionVisibleOnly === true) {
       return new Error(
         [
@@ -30,7 +33,7 @@ export const DATA_GRID_PROPTYPES = {
     }
     return null;
   }),
-  columns: chainPropTypes(PropTypes.array.isRequired, (props: any) => {
+    columns: chainPropTypes(PropTypes.array.isRequired, (props: any) => {
     if (props.columns && props.columns.some((column) => column.resizable)) {
       return new Error(
         [

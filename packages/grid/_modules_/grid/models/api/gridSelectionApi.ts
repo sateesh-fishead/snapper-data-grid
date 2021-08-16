@@ -11,6 +11,8 @@ export interface GridSelectionApi {
    * @param {boolean} allowMultiple Whether to keep the already selected rows or not. Default is `false`.
    */
   selectRow: (id: GridRowId, isSelected?: boolean, allowMultiple?: boolean) => void;
+
+  //selectCollapseRow: (id: GridRowId, isSelected?: boolean) => void;
   /**
    * Change the selection state of multiple rows.
    * @param {GridRowId[]} ids The row ids.

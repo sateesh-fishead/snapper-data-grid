@@ -26,6 +26,7 @@ export function GridBody(props: GridBodyProps) {
   const renderingZoneRef = React.useRef<HTMLDivElement>(null);
 
   apiRef.current.columnHeadersContainerElementRef = columnsContainerRef;
+
   apiRef.current.columnHeadersElementRef = columnsHeaderRef;
   apiRef.current.windowRef = windowRef;
   apiRef.current.renderingZoneRef = renderingZoneRef;

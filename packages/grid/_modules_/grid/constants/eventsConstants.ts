@@ -324,6 +324,8 @@ export const GRID_COLUMN_HEADER_DRAG_END = 'columnHeaderDragEnd';
  */
 export const GRID_SELECTION_CHANGE = 'selectionChange';
 
+export const GRID_COLLAPSE_CHANGE = 'collapseChange';
+
 /**
  * Fired when the page changes.
  * @event

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GRID_ROW_CLICK, GRID_SELECTION_CHANGE } from '../../../constants/eventsConstants';
+import { GRID_ROW_CLICK, GRID_SELECTION_CHANGE, GRID_COLLAPSE_CHANGE } from '../../../constants/eventsConstants';
 import { GridComponentProps } from '../../../GridComponentProps';
 import { GridApiRef } from '../../../models/api/gridApiRef';
 import { GridSelectionApi } from '../../../models/api/gridSelectionApi';
@@ -52,6 +52,12 @@ export const useGridSelection = (apiRef: GridApiRef, props: GridComponentProps):
     isMultipleKey?: boolean;
   }
 
+    interface RowCollapseModelParams {
+        id: GridRowId;
+        row: GridRowModel;
+        isSelected?: boolean;
+    }
+
   const selectRowModel = React.useCallback(
     (rowModelParams: RowModelParams) => {
       const { id, allowMultipleOverride, isSelected, isMultipleKey } = rowModelParams;
@@ -99,6 +105,41 @@ export const useGridSelection = (apiRef: GridApiRef, props: GridComponentProps):
     ],
   );
 
+    const selectedCollapseRowModel = React.useCallback(
+        (rowModelParams: RowCollapseModelParams) => {
+            const { id, isSelected } = rowModelParams;
+
+            if (isRowSelectable && !isRowSelectable(apiRef.current.getRowParams(id))) {
+                return;
+            }
+
+            logger.debug(`Selecting row ${id}`);
+
+            setGridState((state) => {
+                let selectionLookup = selectedIdsLookupSelector(state);
+
+
+
+                const isRowSelected =
+                    isSelected == null ? selectionLookup[id] === undefined : isSelected;
+                selectionLookup = {};
+                if (isRowSelected) {
+                    selectionLookup[id] = id;
+                }
+
+                return { ...state, selection: Object.values(selectionLookup) };
+            });
+            forceUpdate();
+        },
+        [
+            isRowSelectable,
+            apiRef,
+            logger,
+            forceUpdate,
+            setGridState,
+        ],
+    );
+
   const selectRow = React.useCallback(
     (id: GridRowId, isSelected = true, allowMultiple = false) => {
       const row = apiRef.current.getRow(id);
@@ -115,6 +156,22 @@ export const useGridSelection = (apiRef: GridApiRef, props: GridComponentProps):
       });
     },
     [apiRef, selectRowModel],
+  );
+  const selectedCollapseRow = React.useCallback(
+    (id: GridRowId, isSelected = true) => {
+      const row = apiRef.current.getRow(id);
+
+      if (!row) {
+        return;
+      }
+
+      selectedCollapseRowModel({
+        id,
+        row,
+        isSelected,
+      });
+    },
+    [apiRef, selectedCollapseRowModel],
   );
 
   const selectRows = React.useCallback(
@@ -194,6 +251,19 @@ export const useGridSelection = (apiRef: GridApiRef, props: GridComponentProps):
       changeEvent: GRID_SELECTION_CHANGE,
     });
   }, [apiRef, props.onSelectionModelChange, propSelectionModel]);
+
+    React.useEffect(() => {
+        console.log('hai');
+
+        //   apiRef.current.updateControlState<GridRowId[]>({
+        //       stateId: 'selection',
+        //       propOnClick: props.onCollapseModelChange,
+        //       stateSelector: gridSelectionStateSelector,
+        //       changeEvent: GRID_COLLAPSE_CHANGE,
+        // });
+    }, [apiRef, props.onCollapseModelChange, propSelectionModel]);
+
+
 
   React.useEffect(() => {
     // Rows changed

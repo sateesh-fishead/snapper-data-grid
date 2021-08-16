@@ -48,11 +48,14 @@ export interface GridOptions {
    * @default false
    */
   checkboxSelection?: boolean;
+    toggleRow?: boolean;
+
   /**
    * If `true`, the "Select All" header checkbox selects only the rows on the current page. To be used in combination with `checkboxSelection`.
    * @default false
    */
   checkboxSelectionVisibleOnly?: boolean;
+
   /**
    * Number of columns rendered outside the grid viewport.
    * @default 2
@@ -194,6 +197,13 @@ export interface GridOptions {
    * @param {MuiCallbackDetails} details Additional details for this callback.
    */
   isRowSelectable?: (params: GridRowParams, details?: any) => boolean;
+
+    /**
+     * Determines if a row can be selected.
+     * @param {GridRowParams} params With all properties from [[GridRowParams]].
+     * @param {MuiCallbackDetails} details Additional details for this callback.
+     */
+    isRowExpandable?: (params: GridRowParams, details?: any) => boolean;
   /**
    * Set the locale text of the grid.
    * You can find all the translation keys supported in [the source](https://github.com/mui-org/material-ui-x/blob/HEAD/packages/grid/_modules_/grid/constants/localeTextConstants.ts) in the GitHub repository.
@@ -537,6 +547,7 @@ export interface GridOptions {
    * @param {MuiCallbackDetails} details Additional details for this callback.
    */
   onSelectionModelChange?: (selectionModel: GridSelectionModel, details?: any) => void;
+  onCollapseModelChange?: (selectionModel: GridSelectionModel, details?: any) => void;
   /**
    * Callback fired when the sort model changes before a column is sorted.
    * @param model With all properties from [[GridSortModel]].

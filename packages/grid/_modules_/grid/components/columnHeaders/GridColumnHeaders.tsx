@@ -12,6 +12,7 @@ import { gridDensityHeaderHeightSelector } from '../../hooks/features/density/de
 import { gridColumnReorderDragColSelector } from '../../hooks/features/columnReorder/columnReorderSelector';
 import { gridContainerSizesSelector } from '../../hooks/root/gridContainerSizesSelector';
 import { GRID_COLUMN_HEADER_DROP_ZONE_CSS_CLASS } from '../../constants/cssClassesConstants';
+import { useGridRootProps } from '../../hooks/utils/useGridRootProps';
 
 export const gridScrollbarStateSelector = (state: GridState) => state.scrollBar;
 
@@ -26,6 +27,7 @@ export const GridColumnsHeader = React.forwardRef<HTMLDivElement, {}>(function G
   const renderCtx = useGridSelector(apiRef, renderStateSelector).renderContext;
   const { hasScrollX } = useGridSelector(apiRef, gridScrollbarStateSelector);
   const dragCol = useGridSelector(apiRef, gridColumnReorderDragColSelector);
+  console.log(useGridRootProps())
 
   const wrapperCssClasses = clsx('MuiDataGrid-columnHeaderWrapper', {
     scroll: hasScrollX,
@@ -36,7 +38,9 @@ export const GridColumnsHeader = React.forwardRef<HTMLDivElement, {}>(function G
     if (renderCtx == null) {
       return [];
     }
+    console.log(columns.slice(renderCtx.firstColIdx, renderCtx.lastColIdx! + 1));
     return columns.slice(renderCtx.firstColIdx, renderCtx.lastColIdx! + 1);
+
   }, [columns, renderCtx]);
 
   return (
@@ -50,6 +54,10 @@ export const GridColumnsHeader = React.forwardRef<HTMLDivElement, {}>(function G
         style={{ minWidth: containerSizes?.totalSizes?.width }}
       >
         <GridEmptyCell width={renderCtx?.leftEmptyWidth} height={headerHeight} />
+          {useGridRootProps().toggleRow &&
+            <div style={{minWidth: '30px'}}>&nbsp;</div>
+          }
+
         <GridColumnHeadersItemCollection columns={renderedCols} />
         <GridEmptyCell width={renderCtx?.rightEmptyWidth} height={headerHeight} />
       </div>

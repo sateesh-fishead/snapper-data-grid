@@ -12,6 +12,7 @@ import { GridCell, GridCellProps } from './GridCell';
 import { useGridApiContext } from '../../hooks/root/useGridApiContext';
 import { isFunction } from '../../utils/utils';
 import { GRID_CSS_CLASS_PREFIX } from '../../constants/cssClassesConstants';
+import {FC} from "react";
 
 interface RowCellsProps {
   cellClassName?: string;
@@ -31,6 +32,9 @@ interface RowCellsProps {
   cellTabIndex: GridCellIdentifier | null;
   isSelected: boolean;
   editRowState?: GridEditRowProps;
+  expandOption?: boolean;
+  showTargetRow? : any;
+    selectedRow?: any;
 }
 
 export const GridRowCells = React.memo(function GridRowCells(props: RowCellsProps) {
@@ -119,11 +123,39 @@ export const GridRowCells = React.memo(function GridRowCells(props: RowCellsProp
 
     return cellProps;
   });
-
+  const [toggleState, setToggleState] = React.useState(false);
+const getRowInfoClick=(event: React.MouseEvent<HTMLButtonElement>, value)=>{
+    props.showTargetRow(value);
+    setToggleState(!toggleState)
+}
   return (
     <React.Fragment>
+        {props.expandOption && props.row.isParent ?
+
+            <button onClick={(e)=>(getRowInfoClick(e, props.row))} style={{width:'30px'}}>
+                {props.selectedRow == props.row.parentID ? 'C' : 'E'}</button>
+            :
+            <div style={{width:'30px'}}>
+                &nbsp;</div>
+        }
+
+        {console.log(cellsProps)}
       {cellsProps.map((cellProps) => (
-        <GridCell key={cellProps.field} {...cellProps} />
+          <>
+              {(!props.row.isParent && cellProps.field == '__check__') &&
+                  <div style={{width:'50px'}}>&nbsp;</div>
+
+              }
+                  {(!props.row.isParent && cellProps.field != '__check__') &&
+                <>
+                    <GridCell key={cellProps.field} {...cellProps} />
+                </>
+              }
+
+              {props.row.isParent &&
+                  <GridCell key={cellProps.field} {...cellProps} />
+              }
+          </>
       ))}
     </React.Fragment>
   );

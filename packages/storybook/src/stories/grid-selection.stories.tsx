@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { XGrid, GridOptionsProp, GridSelectionModel, useGridApiRef } from '@material-ui/x-grid';
 import { getData, GridData } from '../data/data-service';
 import { useData } from '../hooks/useData';
+import { DataGrid } from '@material-ui/data-grid';
 
 export default {
   title: 'X-Grid Tests/Selection',
@@ -58,12 +59,16 @@ export const MultipleSelectWithCheckbox = () => {
   return <XGrid rows={data.rows} columns={data.columns} checkboxSelection />;
 };
 export const MultipleSelectWithCheckboxNoClick = () => {
-  const data = useData(200, 200);
+  const data = useData(10, 8);
+  //console.log(data.rows);
+    const onSlectedChage =(a, b)=>{
+        console.log(a, b);
+
+    }
   return (
-    <XGrid rows={data.rows} columns={data.columns} checkboxSelection disableSelectionOnClick />
+    <DataGrid rows={data.rows} columns={data.columns} checkboxSelection disableSelectionOnClick toggleRow onCollapseModelChange={onSlectedChage} />
   );
 };
-
 export function HandleSelection() {
   const { data } = useDemoData({
     dataSet: 'Commodity',

@@ -11,6 +11,8 @@ export interface GridControlStateApi {
    * @ignore - do not document.
    */
   updateControlState: <TModel>(controlState: GridControlStateItem<TModel>) => void;
+
+
   /**
    * Allows the internal grid state to apply the registered control state constraint.
    * @param {GridState} state The new modified state that would be the next if the state is not controlled.

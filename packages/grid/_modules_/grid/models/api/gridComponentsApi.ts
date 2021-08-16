@@ -7,6 +7,10 @@ export interface GridApiRefComponentsProperty extends GridIconSlotsComponent {
    * Checkbox component used in the grid for both header and cells. By default, it uses the Material-UI core Checkbox component.
    */
   Checkbox: React.ElementType;
+    /**
+     * Checkbox component used in the grid for both header and cells. By default, it uses the Material-UI core Checkbox component.
+     */
+  Collapse: React.JSXElementConstructor<any>;
   /**
    * Column menu component rendered by clicking on the 3 dots "kebab" icon in column headers.
    */

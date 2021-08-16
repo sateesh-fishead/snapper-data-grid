@@ -24,6 +24,7 @@ import {
 import { useDemoData } from '@material-ui/x-grid-data-generator';
 import { action } from '@storybook/addon-actions';
 import { randomInt } from '../data/random-generator';
+import { DataGrid } from '@material-ui/data-grid';
 
 function isOverflown(element: Element): boolean {
   return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
@@ -373,7 +374,7 @@ const baselineEditProps = {
   rows: [
     {
       id: 0,
-      firstname: 'Damien',
+      firstname: 'Damien1',
       lastname: 'Tassone',
       email: 'damien@material-ui.com',
       username: 'Damo',
@@ -382,9 +383,39 @@ const baselineEditProps = {
       DOB: new Date(1996, 10, 2),
       meetup: new Date(2020, 2, 25, 10, 50, 0),
       isAdmin: true,
+      parentID: 112,
+      isParent: true
     },
-    {
+  {
       id: 1,
+      firstname: 'Damien1 child',
+      lastname: 'Tassone',
+      email: 'damien@material-ui.com',
+      username: 'Damo',
+      lastLogin: new Date(),
+      age: 25,
+      DOB: new Date(1996, 10, 2),
+      meetup: new Date(2020, 2, 25, 10, 50, 0),
+      isAdmin: true,
+      parentID: 112,
+      isParent: false
+  },
+  {
+      id: 2,
+      firstname: 'Damien1 child 2',
+      lastname: 'Tassone',
+      email: 'damien@material-ui.com',
+      username: 'Damo',
+      lastLogin: new Date(),
+      age: 25,
+      DOB: new Date(1996, 10, 2),
+      meetup: new Date(2020, 2, 25, 10, 50, 0),
+      isAdmin: true,
+      parentID: 112,
+      isParent: false
+  },
+    {
+      id: 3,
       firstname: 'Jon',
       lastname: 'Wood',
       email: 'jon@material-ui.com',
@@ -394,9 +425,11 @@ const baselineEditProps = {
       DOB: new Date(1992, 1, 20),
       meetup: new Date(2020, 4, 15, 10, 50, 0),
       isAdmin: true,
+        parentID: 113,
+        isParent: true
     },
     {
-      id: 2,
+      id: 4,
       firstname: 'James',
       lastname: 'Smith',
       email: 'james@material-ui.com',
@@ -406,6 +439,8 @@ const baselineEditProps = {
       DOB: new Date(1986, 0, 12),
       meetup: new Date(2020, 3, 5, 10, 50, 0),
       isAdmin: false,
+        parentID: 113,
+        isParent: false
     },
   ],
   columns: [
@@ -531,6 +566,7 @@ export function EditRowsControl() {
           onEditRowsModelChange={onEditRowsModelChange}
           onCellEditCommit={onCellEditCommit}
           editRowsModel={editRowsModel}
+
         />
       </div>
     </React.Fragment>
@@ -542,10 +578,11 @@ export function EditRowsBasic() {
   return (
     <React.Fragment>
       <div className="grid-container">
-        <XGrid
+        <DataGrid
           {...baselineEditProps}
-          apiRef={apiRef}
-          onEditRowsModelChange={action('onEditRowsModelChange')}
+          toggleRow
+          checkboxSelection
+          disableSelectionOnClick
         />
       </div>
     </React.Fragment>

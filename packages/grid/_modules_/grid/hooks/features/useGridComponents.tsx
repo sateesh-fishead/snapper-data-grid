@@ -1,5 +1,6 @@
 import * as React from 'react';
 import MUICheckbox from '@material-ui/core/Checkbox';
+import MUIButton from '@material-ui/core/Button';
 import { GridApiRef } from '../../models/api/gridApiRef';
 import { GridApiRefComponentsProperty } from '../../models/api/gridComponentsApi';
 import { GridSlotsComponent } from '../../models/gridSlotsComponent';
@@ -37,6 +38,7 @@ export const DEFAULT_GRID_SLOTS_COMPONENTS: GridApiRefComponentsProperty = {
   BooleanCellFalseIcon: GridCloseIcon,
   BooleanCellTrueIcon: GridCheckIcon,
   Checkbox: MUICheckbox,
+  Collapse: MUIButton,
   ColumnFilteredIcon: GridFilterAltIcon,
   ColumnMenu: GridColumnMenu,
   ColumnMenuIcon: GridTripleDotsVerticalIcon,
@@ -113,6 +115,7 @@ export const useGridComponents = (
         (components && components.OpenFilterButtonIcon) ||
         DEFAULT_GRID_SLOTS_COMPONENTS.OpenFilterButtonIcon,
       Checkbox: (components && components.Checkbox) || DEFAULT_GRID_SLOTS_COMPONENTS.Checkbox,
+      Collapse: (components && components.Collapse) || DEFAULT_GRID_SLOTS_COMPONENTS.Collapse,
       ColumnMenu: (components && components.ColumnMenu) || DEFAULT_GRID_SLOTS_COMPONENTS.ColumnMenu,
       ErrorOverlay:
         (components && components.ErrorOverlay) || DEFAULT_GRID_SLOTS_COMPONENTS.ErrorOverlay,

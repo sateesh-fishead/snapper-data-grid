@@ -3,6 +3,7 @@
  */
 export interface GridSlotsComponentsProps {
   checkbox?: any;
+  collapse?: any;
   columnMenu?: any;
   columnsPanel?: any;
   errorOverlay?: any;

@@ -11,7 +11,6 @@ export const GridRenderingZone = React.forwardRef<HTMLDivElement, ElementSize & 
         ref={ref}
         className="MuiDataGrid-renderingZone"
         style={{
-          maxHeight: height,
           width,
         }}
       >
