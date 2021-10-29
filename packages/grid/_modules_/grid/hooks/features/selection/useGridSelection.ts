@@ -36,6 +36,19 @@ export const useGridSelection = (apiRef: GridApiRef, props: GridComponentProps):
     return [props.selectionModel];
   }, [props.selectionModel]);
 
+
+    const propCollapseModel = React.useMemo(() => {
+        if (props.collapseModel == null) {
+            return props.collapseModel;
+        }
+
+        if (Array.isArray(props.collapseModel)) {
+            return props.collapseModel;
+        }
+
+        return [props.collapseModel];
+    }, [props.collapseModel]);
+
   const { checkboxSelection, disableMultipleSelection, disableSelectionOnClick, isRowSelectable } =
     options;
 
@@ -236,10 +249,12 @@ export const useGridSelection = (apiRef: GridApiRef, props: GridComponentProps):
   // TODO handle Cell Click/range selection?
   const selectionApi: GridSelectionApi = {
     selectRow,
+    selectedCollapseRow,
     getSelectedRows,
     selectRows,
     setSelectionModel,
   };
+
   useGridApiMethod(apiRef, selectionApi, 'GridSelectionApi');
 
   React.useEffect(() => {
@@ -255,13 +270,14 @@ export const useGridSelection = (apiRef: GridApiRef, props: GridComponentProps):
     React.useEffect(() => {
         console.log('hai');
 
-        //   apiRef.current.updateControlState<GridRowId[]>({
-        //       stateId: 'selection',
-        //       propOnClick: props.onCollapseModelChange,
-        //       stateSelector: gridSelectionStateSelector,
-        //       changeEvent: GRID_COLLAPSE_CHANGE,
-        // });
-    }, [apiRef, props.onCollapseModelChange, propSelectionModel]);
+          apiRef.current.updateControlState<GridRowId[]>({
+              stateId: 'selection',
+              propModel: propCollapseModel,
+              propOnClick: props.onCollapseModelChange,
+              stateSelector: gridSelectionStateSelector,
+              changeEvent: GRID_COLLAPSE_CHANGE,
+        });
+    }, [apiRef, props.onCollapseModelChange, propCollapseModel]);
 
 
 

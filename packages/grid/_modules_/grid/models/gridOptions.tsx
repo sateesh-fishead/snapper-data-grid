@@ -609,6 +609,7 @@ export interface GridOptions {
    * Set the selection model of the grid.
    */
   selectionModel?: GridInputSelectionModel;
+  collapseModel?: GridSelectionModel;
   /**
    * @internal enum
    */

@@ -49,3 +49,12 @@ If you have recently updated, please read the [changelog](https://github.com/mui
 ## Roadmap
 
 The future plans and high priority features and enhancements can be found in the [roadmap](https://material-ui.com/discover-more/roadmap/) file.
+
+
+## Run Commands
+npm install
+yarn storybook:dev for run in local
+Go to linux / Ubuntu app in windows
+Run "sudo su" for login into Ubuntu
+Go to directory by using "cd /mnt/d"
+

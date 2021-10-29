@@ -23,7 +23,9 @@ export function AllEvents() {
     onCellOver: (params) => action('onCellOver')(params),
     onRowOver: (params) => action('onRowOver')(params),
     onColumnHeaderClick: (params) => action('onColumnHeaderClick')(params),
-    onSelectionModelChange: (params) => action('onSelectionChange', { depth: 1 })(params),
+    onSelectionModelChange: (params) => {
+      console.log('params', params);
+    },
     onPageChange: (params) => action('onPageChange')(params),
     onPageSizeChange: (params) => action('onPageSizeChange')(params),
     onSortModelChange: (params) => action('onSortModelChange')(params),

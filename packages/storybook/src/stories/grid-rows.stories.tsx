@@ -574,7 +574,18 @@ export function EditRowsControl() {
 }
 export function EditRowsBasic() {
   const apiRef = useGridApiRef();
+    const cmc=(abc)=>{
+        console.log('sdfsd', abc);
+    }
 
+    const [selectionModel, setSelectionModel] = React.useState<any>([]);
+    const handleSelectionChange = React.useCallback((newModel) => {
+        alert('hai');
+
+
+        console.log('sdfsd', newModel)
+        setSelectionModel(newModel);
+    }, []);
   return (
     <React.Fragment>
       <div className="grid-container">
@@ -582,7 +593,10 @@ export function EditRowsBasic() {
           {...baselineEditProps}
           toggleRow
           checkboxSelection
-          disableSelectionOnClick
+
+          onCollapseModelChange={cmc}
+          selectionModel={selectionModel}
+          onSelectionModelChange={handleSelectionChange}
         />
       </div>
     </React.Fragment>

@@ -126,7 +126,8 @@ export const GridRowCells = React.memo(function GridRowCells(props: RowCellsProp
   const [toggleState, setToggleState] = React.useState(false);
 const getRowInfoClick=(event: React.MouseEvent<HTMLButtonElement>, value)=>{
     props.showTargetRow(value);
-    setToggleState(!toggleState)
+    setToggleState(!toggleState);
+    apiRef!.current.selectedCollapseRow(value.parentID, !toggleState);
 }
   return (
     <React.Fragment>

@@ -12,7 +12,7 @@ export interface GridSelectionApi {
    */
   selectRow: (id: GridRowId, isSelected?: boolean, allowMultiple?: boolean) => void;
 
-  //selectCollapseRow: (id: GridRowId, isSelected?: boolean) => void;
+  selectedCollapseRow: (id: GridRowId, isSelected?: boolean) => void;
   /**
    * Change the selection state of multiple rows.
    * @param {GridRowId[]} ids The row ids.
